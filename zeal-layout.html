@@ -1,0 +1,192 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <zeal-layout></zeal-layout>
+
+@group Seed Elements
+@element zeal-layout
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="zeal-layout">
+
+  <template>
+    <style is="customStyle">
+      :host {
+        display: block;
+        box-sizing: border-box;
+        position: relative;
+      }
+
+      :host *, :host ::content * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+
+      :host ::content .zeal-group, :host ::content .zeal-block {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+      }
+
+      .container ::content > * {
+        @apply(--layout-flex);
+        width: 100%;
+      }
+
+      .container[tiny-layout] ::content > * {
+        min-width: var(--zeal-layout-block-tiny-width, 100%);
+        max-width: var(--zeal-layout-block-tiny-width, 100%);
+        padding: var(--zeal-layout-block-padding, 5%);
+      }
+      .container[small-layout] ::content > * {
+        min-width: var(--zeal-layout-block-small-width, 100%);
+        max-width: var(--zeal-layout-block-small-width, 100%);
+        padding: var(--zeal-layout-block-padding, 5%);
+      }
+      .container[medium-layout] ::content > * {
+        min-width: var(--zeal-layout-block-medium-width, 100%);
+        max-width: var(--zeal-layout-block-medium-width, 100%);
+        padding: var(--zeal-layout-block-padding, 5%);
+      }
+      .container[large-layout] ::content > * {
+        min-width: var(--zeal-layout-block-large-width, 100%);
+        max-width: var(--zeal-layout-block-large-width, 100%);
+        padding: var(--zeal-layout-block-padding, 5%);
+      }
+      .container[jumbo-layout] ::content > * {
+        min-width: var(--zeal-layout-block-jumbo-width, 100%);
+        max-width: var(--zeal-layout-block-jumbo-width, 100%);
+        padding: var(--zeal-layout-block-padding, 5%);
+      }
+    </style>
+    <iron-media-query query="(min-width: 0)" query-matches="{{isTiny}}"></iron-media-query>
+    <iron-media-query query="(min-width: 640px)" query-matches="{{isSmall}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1024px)" query-matches="{{isMedium}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1200px)" query-matches="{{isLarge}}"></iron-media-query>
+    <iron-media-query query="(min-width: 1440px)" query-matches="{{isJumbo}}"></iron-media-query>
+    <div 
+        class="container"
+        tiny-layout$="{{isTiny}}"
+        small-layout$="{{isSmall}}"
+        medium-layout$="{{isMedium}}"
+        large-layout$="{{isLarge}}"
+        xlarge-layout$="{{isJumbo}}"
+      >
+        <content></content>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'zeal-layout',
+
+    properties: {
+      tiny: {
+        type: Number,
+        value: 1,
+        notify: true,
+        observer: '_updateColumnWidths'
+      },
+      small: {
+        type: Number,
+        notify: true,
+        observer: '_updateColumnWidths'
+      },
+      medium: {
+        type: Number,
+        notify: true,
+        observer: '_updateColumnWidths'
+      },
+      large: {
+        type: Number,
+        notify: true,
+        observer: '_updateColumnWidths'
+      },
+      jumbo: {
+        type: Number,
+        notify: true,
+        observer: '_updateColumnWidths'
+      }
+      
+    },
+
+    _updateColumnWidths: function(newValue, oldValue){
+      var tiny = this.tiny,
+        small = this.small || tiny,
+        medium = this.medium || small,
+        large = this.large || medium,
+        jumbo = this.jumbo || large;
+
+      this.customStyle['--zeal-layout-block-tiny-width'] = 100/tiny + '%';
+      this.customStyle['--zeal-layout-block-small-width'] = 100/small + '%';
+      this.customStyle['--zeal-layout-block-medium-width'] = 100/medium + '%';
+      this.customStyle['--zeal-layout-block-large-width'] = 100/large + '%';
+      this.customStyle['--zeal-layout-block-jumbo-width'] = 100/jumbo + '%';
+      this.updateStyles();
+    },
+
+    // Element Lifecycle
+
+    ready: function() {
+      // `ready` is called after all elements have been configured, but
+      // propagates bottom-up. This element's children are ready, but parents
+      // are not.
+      //
+      // This is the point where you should make modifications to the DOM (when
+      // necessary), or kick off any processes the element wants to perform.
+//       this.computeColumnWidth(this.columns);
+//       this._updateColumnWidths();
+    },
+
+    attached: function() {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+    },
+
+    detached: function() {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+    }
+
+    // Element Behavior
+
+    /**
+     * The `zeal-layout-lasers` event is fired whenever `fireLasers` is called.
+     *
+     * @event zeal-layout-lasers
+     * @detail {{sound: String}}
+     */
+
+  });
+
+</script>
